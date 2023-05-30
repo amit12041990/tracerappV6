@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Protect</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://d3js.org/d3.v4.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
+
+  <!-- Load d3-cloud -->
+  <script src="https://cdn.jsdelivr.net/gh/holtzy/D3-graph-gallery@master/LIB/d3.layout.cloud.js"></script>
+  <script src="{{url_for('static',filename='js/custum.js')}}"></script>
+
+  <style>
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: inherit; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 10px;
+  padding-bottom: 10px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 30%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 95%;
+}
+
+/* The Close Button */
+.close {
+  color: #aaaaaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+.material-symbols-outlined {
+  font-variation-settings:
+  'FILL' 0,
+  'wght' 400,
+  'GRAD' 0,
+  'opsz' 48
+}
+  </style>
+</head>
+<body>
+
+    <div class="container mt-3">
+   
+        <div class="mt-4 p-5 bg-primary text-white rounded">
+          <h1>Parents Dashboard</h1>
+          <p>parrent login id : {{parentId}} </p> 
+          <h1>Child Browsing Activity</h1>
+          <p>child unique_id : {{childdata.u_id}}   </p>
+          <p>Name: {{childdata.name}} </p>
+
+          <div class="row">
+            <div class="col-12" style="text-align: right;"><a style="color: white;" href="http://localhost:4000/logout">logout</a> </div>
+          </div>
+          <div class="row">
+            <div class="col-12" style="text-align: left;"><a style="color: white;" href="http://localhost:4000">Home</a> </div>
+          </div>
+        </div>
+        <div class="user-details-random-txt">
+          <!-- The Modal -->
+
+          <ul class="details-random-txt-wrap">
+        
+          </ul>
+          <div id="myModal" class="modal">
+
+            <!-- Modal content -->
+            <div class="modal-content">
+              <span class="close">&times;</span>
+              <h1 id="word" style="text-align: center; margin-bottom: 10px;" ></h1>
+           
+              <div class="row">
+                <div class="col-6 col-sm-3"> <img src="{{url_for('static',filename='js/vid.png')}}" height="50px" width="50px" class="d-flex align-items-center justify-content-center" alt="Responsive image"> 
+                  <span>Videos</span>
+                  <div>
+                   
+                    <h1 id="vid"></h1>
+                    <a href="" id="viewVid">Go to see Comment</a>
+                    
+                  </div>
+                 
+                </div>
+                <div class="col-6 col-sm-3"> <img src="{{url_for('static',filename='js/page.png')}}" height="50px" width="50px" class="d-flex align-items-center justify-content-center" alt="Responsive image">
+                  <span>Pages</span>
+                  <div id="">
+                   
+                    <h1 id="page"></h1>
+                    <p id="">Go To see Each Url Time Spend</p>
+                    
+                  </div>
+                </div>
+            
+                <!-- Force next columns to break to new line -->
+                
+            
+                <div class="col-6 col-sm-3" > <img src="{{url_for('static',filename='js/comment.png')}}" height="50px" width="50px" class="d-flex align-items-center justify-content-center" alt="Responsive image">
+                  <span>Comments</span>
+                  <div>
+                   
+                    <h1 id="comment">next-task</h1>
+                    <a href="" id="viewComment">Go to see Comment</a>
+                   
+                    
+                  </div>
+                </div>
+                <div class="col-6 col-sm-3"> <img src="{{url_for('static',filename='js/timer.png')}}" height="50px" width="50px" class="d-flex align-items-center justify-content-center"alt="Responsive image">
+                 <span>Time Spend</span>
+                  <div>
+                   
+                    <h1 id="time">Some text in the Modal..</h1>
+                    
+                    
+                  </div>
+                </div>
+              </div>
+              
+            </div>
+          
+          </div>
+        </div>
+        
+      </div>
+      
+      
+     
+    
+     
+</body>
+<script>
+
+  // percentile of url duration
+const percentile = (arr, val) => {
+    let count = 0;
+    arr.forEach(v => {
+      if (v < val) {
+        count++;
+      } else if (v == val) {
+        count += 0.5;
+      }
+    });
+    return 100 * count / arr.length;
+  }
+  //
+
+
+var keywords = {{wordcloud|tojson}}
+console.log(keywords)
+var heyYou = keywords.filter(el=>{
+    if(el.keyword !== 'localhost:4000'){
+      return el
+    }
+})
+
+var child_data_here={{childdata|tojson}}
+var child_name=decodeURIComponent(child_data_here.name)
+console.log(child_name)
+
+
+
+const values = heyYou.map(el=>{return el.sec})
+const newData = heyYou.filter(el=>{
+  el.percent=percentile(values,el.sec)
+  return el
+})
+//console.log(newData)
+const ordered = _.orderBy(
+  newData,
+  function(item) {
+    return item.comment.length>=0;
+  }
+);
+console.log(ordered)
+
+
+ 
+  //console.log('Server Response keywords',myWords)
+  var myWordss = [{word: "Running", size: "10"},
+   {word: "Surfing", size: "20"},
+    {word: "Climbing", size: "50"}, 
+    {word: "Kiting", size: "30"}, 
+    {word: "Sailing", size: "20"},
+     {word: "Snowboarding", size: "60"},
+     {word: "Surfing", size: "70"},
+    {word: "Climbing", size: "90"}, 
+    {word: "Kiting", size: "30"}, 
+    {word: "Sailing", size: "20"},
+     {word: "Snowboarding", size: "60"}
+  ]
+  
+ 
+ 
+  
+  // set the dimensions and margins of the graph
+  
+  
+  var margin = {top: 10, right: 10, bottom: 10, left: 10},
+      width = 1300 - margin.left - margin.right,
+      height = 450 - margin.top - margin.bottom;
+  
+  // append the svg object to the body of the page
+  var svg = d3.select(".user-details-random-txt").append("svg")
+    .attr("width", width)
+      .attr("height", height + margin.top + margin.bottom)
+      
+  
+    .append("g")
+    .attr("id",'mytooltip')
+    .attr("PointerEvent","all")
+      .attr("transform",
+            "translate(" + margin.left + "," + margin.top + ")");
+            
+  
+  // Constructs a new cloud layout instance. It run an algorithm to find the position of words that suits your requirements
+  // Wordcloud features that are different from one word to the other must be here
+  var layout = d3.layout.cloud()
+    .size([width, height])
+    .words(ordered.map(function(d) {
+        
+       return {text: d.keyword,percent:d.percent,size:d.sec,tot_vid:d.video,tot_page:d.pages,vid_url:{'url':d.video_url,'keyword':d.keyword},time:d.sec,tot_comment:d.comment}; 
+      }))
+    .padding(10)        //space between words
+   //.rotate(function() { return ~~(Math.random() * 1) * 90; })
+   .rotate((d)=>{return 360})
+    .fontSize(function(d) { return d.tot_comment.length>=1?Math.round(d.percent):Math.round(d.percent)/4})      // font size of words
+    .on("end", draw);
+  layout.start();
+  
+  // This function takes the output of 'layout' above and draw the words
+  function color()
+  { var col = Math.floor(Math.random()*16777215).toString(16);
+  //console.log(`"#${col}"`)
+    return(`#${col}`) ;
+  
+  }
+  color();
+
+  // Wordcloud features that are THE SAME from one word to the other can be here
+ 
+  function draw(words) {
+    svg
+      .append("g")
+        .attr("transform", "translate(" + layout.size()[0]/2 + "," + layout.size()[1]/2  + ")")
+        .selectAll("text")
+        
+          .data(words)
+        .enter().append("text")
+        
+          .style("font-size", function(d) { return d.tot_comment.length>=1?Math.round(d.percent):Math.round(d.percent)/4 })
+        //.style("fill", "#E36B16")
+        .style("fill",color)
+          .attr("text-anchor", "middle")
+          .style("font-family", "poppins")
+          .style("font-weight","bold")
+          .attr("transform", function(d) {
+            return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+          })
+          .on("mouseover", handleMouseOver)
+         // .on("mouseout", handleMouseOut)
+          
+          .text(function(d) { return d.text; });
+
+          var span = document.getElementsByClassName("close")[0];
+          function handleMouseOver(d, i) {
+            // document.getElementsByClassName('tooltip')[1].style.visibility='visible'
+            
+            document.getElementById('word').innerText=d.text;
+            document.getElementById('word').style.color=color()
+             document.getElementById('page').style.color=color()
+             document.getElementById('time').style.color=color()
+             document.getElementById('vid').style.color=color()
+
+            document.querySelector('.modal-content').style.backgroundColor=	'#eeeeee'
+            document.querySelector('#myModal').style.display='block'
+            document.querySelector('#vid').innerText=d.tot_vid !==undefined ?" "+ d.tot_vid:'Sorry'
+            document.querySelector('#page').innerText=d.tot_page !==undefined ?" "+ d.tot_page:'Sorry'
+            document.querySelector('#time').innerText=d.time !==undefined ?" "+convertTime(d.time):'Sorry'
+            var comment=""
+            if (Array.isArray(d.tot_comment)){
+             dj= duplicate_comment(d.tot_comment)
+              var comment = dj.length
+            }else{
+              comment='soryy'
+            }
+            childname = {{childdata.name|tojson}}
+            document.querySelector('#comment').innerText=comment
+            document.querySelector('#viewComment').href="comments?data="+encodeURIComponent(JSON.stringify(dj))+"&c_id="+child_name
+            document.querySelector('#viewVid').href="videos?data="+encodeURIComponent(JSON.stringify(d.vid_url))
+          
+
+       
+          }
+         
+         function handleMouseOut(d, i) {
+          document.querySelector('#myModal').style.display='none'
+           
+         }
+         // When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+  //document.querySelector('#myModal').style.visibility='none'
+  document.querySelector('#myModal').style.display='none'
+}
+
+          
+  }
+  </script>
+ 
+</html>
