@@ -1,6 +1,7 @@
 from flask import Flask,render_template,url_for,request,session,jsonify,redirect,make_response,Response
 #importing custome functions
 from functions.scrape import *
+from functions.check_emo_ton import *
 import json,hashlib,datetime,uuid,bson
 import pandas as pd
 import numpy as np
@@ -495,8 +496,9 @@ def allComment():
             data = (json.loads(unquote(args['data'])))
             child_id = (args['c_id'])
             for each in data:
-                    scores = sid.polarity_scores(each['comment'])
-
+                    scores = userTonality(each['comment'],'static/dataset/tonality.csv')
+                    emotion =analysis(each['comment'],'static/dataset/emotion.csv')
+                    '''
                     # Determine the tonality based on the compound score
                     compound_score = scores['compound']
 
@@ -506,7 +508,9 @@ def allComment():
                         tonality = "Negative"
                     else:
                         tonality = "Neutral"
-                    each['ton'] = tonality
+                    '''
+                    each['ton'] = scores
+                    each['emo'] = emotion
             #return data
             return render_template('comment_pag.html',content=session['username'],comments=data,child_ID = child_id)
        else: 
