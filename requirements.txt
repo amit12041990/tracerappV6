@@ -1,0 +1,14 @@
+flask
+pandas
+emoji
+neattext
+scikit-learn
+language_tool_python
+enchant
+vaderSentiment
+spellchecker
+indexer
+nltk
+spacy
+
+pip install python3.12-distutils

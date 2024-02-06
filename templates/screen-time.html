@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+
+    <title>Screen Time -- Parental Control</title>
+    <meta content="" name="description" />
+    <meta content="" name="keywords" />
+
+    <!-- Favicons -->
+    <link href="{{ url_for('static', filename='assets/img/favicon.png') }}" rel="icon" />
+    <link href="{{ url_for('static', filename='assets/img/apple-touch-icon.png') }}" rel="apple-touch-icon" />
+    
+    <!-- Vendor CSS Files -->
+    <link href="{{ url_for('static', filename='assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet" />
+    <link href="{{ url_for('static', filename='assets/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/datatables/datatable.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/font.css') }}" />
+    
+    <!-- Template Main CSS File -->
+    <link href="{{ url_for('static', filename='assets/css/default.css') }}" rel="stylesheet" />
+    <link href="{{ url_for('static', filename='assets/css/style.css') }}" rel="stylesheet" />
+    <link href="{{ url_for('static', filename='assets/css/responsive.css') }}" rel="stylesheet" />
+  </head>
+
+  <body>
+    <!-- ======= Header ======= -->
+    <header id="header" class="header fixed-top d-flex align-items-center">
+      <div class="container-fluid">
+        <div class="header-inner">
+          <div class="d-flex align-items-center justify-content-between">
+            <a href="{{ url_for('hello_tracer') }}" class="logo d-flex align-items-center">
+              <span class="">Dashboard</span>
+            </a>
+            <!-- <i class="bi bi-list toggle-sidebar-btn"></i> -->
+          </div>
+          <!-- End Logo -->
+          <nav class="header-nav ms-auto">
+            <ul class="d-flex align-items-center">
+              <li class="nav-item dropdown">
+                <a class="nav-link nav-icon" href="./family.html">Parent</a>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link nav-icon" href="#">Child</a>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link btn logout-btn" href="{{ url_for('logout') }}">
+                  <i class="bi bi-power"></i>
+                  Logout
+                </a>
+              </li>
+            </ul>
+          </nav>
+          <!-- End Icons Navigation -->
+        </div>
+      </div>
+    </header>
+    <!-- End Header -->
+
+    <main id="main" class="main">
+      <section id="dashboard-main-sec">
+        <div class="container">
+          <div class="dashborad-main-wrapper">
+            <div class="dashboard-top-wrap">
+              <div class="family-top-wrap">
+                <div class="parent-id">
+                  <p>Screen Time : {{childName}}</p>
+                </div>
+              </div>
+            </div>
+            <div class="dashboard-content-wrap">
+              <div class="table-wrapper screen-time-table-wrapper">
+                {% for date in screenTime %}
+                <table class="screen-time-table table">
+                  <thead>
+                   
+                    <tr>
+                      <th>Date</th>
+                      <th>URL's</th>
+                      <th>Total Time Spend</th>
+                    </tr>
+                  </thead>
+                  <thead class="table-toggler">
+                    <tr>
+                      <th>{{date['Date']}}</th>
+                      <th>{{date['Total URLs']}}</th>
+                      <th>
+                        {% set total_seconds = date['Total Time'] %}
+                        {% set hours = total_seconds // 3600 %}
+                        {% set remaining_seconds = total_seconds % 3600 %}
+                        {% set minutes = remaining_seconds // 60 %}
+                        {{ hours }}h {{ minutes }}m<span class="toggle-arrow"><i class="bi bi-chevron-down"></i></span>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for url in date['URLs']%}
+                    <tr>
+                      <td>{{url['Time']}}</td>
+                      <td><a href="google.com">{{url['URL']}}</a></td>
+                      <td>{% set total_seconds = url['Total Time'] %}
+                        {% set hours = total_seconds // 3600 %}
+                        {% set remaining_seconds = total_seconds % 3600 %}
+                        {% set minutes = remaining_seconds // 60 %}
+                        {{ hours }}h {{ minutes }}m</td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+                {% endfor %}
+              </div>
+            
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <!-- End #main -->
+
+    <!-- ======= Footer ======= -->
+    <footer id="footer" class="footer">
+      <div class="copyright">
+        &copy; Copyright <strong><span>Parental Control</span></strong
+        >. All Rights Reserved
+      </div>
+    </footer>
+    <!-- End Footer -->
+
+    <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+<!-- Vendor JS Files -->
+<script src="{{ url_for('static', filename='assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+<script src="{{ url_for('static', filename='assets/vendor/jquery/jquery_3-70_min.js') }}"></script>
+<script src="{{ url_for('static', filename='assets/vendor/datatables/datatable.js') }}"></script>
+
+<!-- Template Main JS File -->
+<script src="{{ url_for('static', filename='assets/js/main.js') }}"></script>
+<script>
+  // Wrap your code inside $(document).ready()
+  $(document).ready(function () {
+    $(".table-toggler").click(function () {
+      
+      $(this).parent().toggleClass("show");
+    });
+  });
+</script>
+  </body>
+</html>

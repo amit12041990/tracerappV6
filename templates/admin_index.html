@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>Admin Page</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+
+<!-- Favicons -->
+<link href="{{ url_for('static', filename='assets/img/favicon.png') }}" rel="icon">
+<link href="{{ url_for('static', filename='assets/img/apple-touch-icon.png') }}" rel="apple-touch-icon">
+
+<!-- Vendor CSS Files -->
+<link href="{{ url_for('static', filename='assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='assets/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='assets/css/font.css') }}">
+
+<!-- Template Main CSS File -->
+<link href="{{ url_for('static', filename='assets/css/default.css') }}" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='assets/css/style.css') }}">
+
+</head>
+
+<body>
+  <main class="signin-main">
+    <div class="container">
+      <div class="signin-wrapper">
+        <div class="signin-top-wrap">
+          <h1>Register & Login</h1>
+         
+        </div>
+        <div class="signin-form-wrapper">
+          
+            <div class="sign-in-form-inner">
+             
+              <div class="sign-in-lft">
+                <div class="sign-in-head">
+                  <div class="head-line"></div>
+                  <h3>Admin Register Form</h3>
+                </div>
+                <div class="sign-in-form-wrapper signup-form-wrapper">
+                  <form name="register_form" method="post" id ="signupForm" action="{{url_for('admin_register')}}" onsubmit="return register_validation()">
+                    <div class="default-input-label-wrap">
+                      <label for="email" class="form-label">Email</label>
+                      <div class="input-group mb-3">
+                        <span class="input-group-text" id="basic-addon1"><i class="bi bi-envelope"></i></span>
+                        <input type="email" class="form-control" placeholder="Enter Your Email" aria-label="Email" aria-describedby="basic-addon1" id="email" name="email" required>
+                        <div class="invalid-feedback">
+                          Please choose a username.
+                        </div>
+                      </div>
+                    </div>
+                    <div class="default-input-label-wrap">
+                      <label for="name" class="form-label">Full Name</label>
+                      <div class="input-group mb-3">
+                        <span class="input-group-text" id="basic-addon2"><i class="bi bi-person"></i></span>
+                        <input type="text" class="form-control" placeholder="Enter Your Name" aria-label="Enter Your Name" aria-describedby="basic-addon2" name="name" id="name" required>
+                      </div>
+                    </div>
+                    <div class="default-input-label-wrap">
+                      <label for="password" class="form-label">Security Key</label>
+                      <div class="input-group mb-3">
+                        <span class="input-group-text" id="basic-addon3"><i class="bi bi-shield-lock"></i></span>
+                        <input type="password" class="form-control" placeholder="Enter Security key" aria-label="Enter Password" aria-describedby="basic-addon3" name="skey" id="skey" required>
+                        <div class="invalid-feedback">
+                          Please choose a username.
+                        </div>
+                      </div>
+                    </div>
+                    <div class="default-input-label-wrap">
+                      <label for="password" class="form-label">Password</label>
+                      <div class="input-group mb-3">
+                        <span class="input-group-text" id="basic-addon3"><i class="bi bi-shield-lock"></i></span>
+                        <input type="password" class="form-control" placeholder="Enter Password" aria-label="Enter Password" aria-describedby="basic-addon3" name="pswd" id="password" required>
+                        <div class="invalid-feedback">
+                          Please choose a username.
+                        </div>
+                      </div>
+                    </div>
+                    <div class="default-input-label-wrap">
+                      <label for="confirm_password" class="form-label">Confirm Password</label>
+                      <div class="input-group mb-3">
+                        <span class="input-group-text" id="basic-addon4"><i class="bi bi-shield-lock"></i></span>
+                        <input type="password" class="form-control" placeholder="Enter Confirm Password" aria-label="Enter Confirm Password" aria-describedby="basic-addon4" name="c_pswd" required id="c_pswd">
+                        <div class="invalid-feedback">
+                          Please choose a username.
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-check mb-3">
+                      <input class="form-check-input" type="checkbox" id="terms_conditions" required>
+                      <label class="form-check-label" for="terms_conditions">
+                        I agree to the <a href="">Terms & Conditions</a>
+                      </label>
+                    </div>
+                    <div class="submit-btn-wrap">
+                      <button class="btn btn-primary" type="submit">Register</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+              <div class="sign-in-rht">
+                <div class="sign-in-head">
+                  <div class="head-line"></div>
+                  <h3>Login Here</h3>
+                </div>
+                <div class="sign-in-form-wrapper login-form-wrapper">
+                  <form name="login_form" method="post" action="{{url_for('login')}}">
+                    <div class="default-input-label-wrap">
+                      <label for="email" class="form-label">Email</label>
+                      <div class="input-group mb-3">
+                        <span class="input-group-text" id="basic-addon1"><i class="bi bi-envelope"></i></span>
+                        <input type="email" class="form-control" placeholder="Enter Your Email" aria-label="Email" aria-describedby="basic-addon1" id="email" name="email" required>
+                        <div class="invalid-feedback">
+                          Please choose a username.
+                        </div>
+                      </div>
+                    </div>
+                    <div class="default-input-label-wrap">
+                      <label for="password" class="form-label">Password</label>
+                      <div class="input-group mb-3">
+                        <span class="input-group-text" id="basic-addon3"><i class="bi bi-shield-lock"></i></span>
+                        <input type="password" class="form-control" placeholder="Enter Password" aria-label="Enter Password" aria-describedby="basic-addon3" name="pswd" id="password" required>                        <div class="invalid-feedback">
+                          Please choose a username.
+                        </div>
+                      </div>
+                    </div>
+                    <div class="submit-btn-wrap">
+                    <button class="btn btn-primary" type="submit">Login</button>
+                     
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+        </div>
+      </div>
+    </div>
+      <!-- ======= Footer ======= -->
+  <footer id="footer" class="footer">
+   
+    <div class="copyright">
+     
+      &copy; Copyright <strong><span>Parental Control</span></strong>. All Rights Reserved
+    </div>
+  </footer><!-- End Footer -->
+  </main>
+
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <!-- Vendor JS Files -->
+  <script src="{{ url_for('static', filename='assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/apexcharts/apexcharts.min.js') }}"></script>
+  
+  <!-- Template Main JS File -->
+  <script src="{{ url_for('static', filename='assets/js/main.js') }}"></script>
+  
+
+</body>
+
+</html>

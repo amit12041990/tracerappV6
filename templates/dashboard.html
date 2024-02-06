@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+
+    <title>Dashboard -- Parental Control</title>
+    <meta content="" name="description" />
+    <meta content="" name="keywords" />
+
+    <!-- Favicons -->
+    <link href="assets/img/favicon.png" rel="icon" />
+    <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon" />
+
+    <!-- Vendor CSS Files -->
+    <!-- Vendor CSS Files -->
+    <link href="{{ url_for('static', filename='assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/font.css') }}">
+    <link rel="stylesheet"
+        href="{{ url_for('static', filename='assets/vendor/daterangepicker/daterangepicker.min.css') }}">
+
+
+    <!-- Template Main CSS File -->
+    <link href="{{ url_for('static', filename='assets/css/default.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/css/style.css') }}" rel="stylesheet">
+
+
+</head>
+
+<body>
+    <!-- ======= Header ======= -->
+    <header id="header" class="header fixed-top d-flex align-items-center">
+        <div class="container-fluid">
+            <div class="header-inner">
+                <div class="d-flex align-items-center justify-content-between">
+                    <a href="{{ url_for('hello_tracer') }}" class="logo d-flex align-items-center">
+                        <span class="d-none d-lg-block">Dashboard</span>
+                    </a>
+                    <!-- <i class="bi bi-list toggle-sidebar-btn"></i> -->
+                </div>
+                <!-- End Logo -->
+                <nav class="header-nav ms-auto">
+                    <ul class="d-flex align-items-center">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link nav-icon" href="./family.html"> Parent </a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link nav-icon" href="#"> {{child_id}} </a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link btn logout-btn" href="{{ url_for('logout') }}">
+                                <i class="bi bi-power"></i>
+                                Logout
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+                <!-- End Icons Navigation -->
+            </div>
+        </div>
+    </header>
+    <!-- End Header -->
+
+    <main id="main" class="main dashboard-bg">
+        <section id="dashboard-main-sec">
+            <div class="container">
+                <div class="dashborad-main-wrapper ">
+                    <div class="dashboard-top-wrap">
+                        <div class="search-bar">
+                            <!----  <form class="search-form d-flex align-items-center" method="POST" action="#">
+                                  <div class="input-group">
+                                      <select class="form-control" id="timePeriodDropdown">
+                                          <option value="2">last Day</option>
+                                          <option value="7">Day 7</option>
+                                          <option value="14">Day 14</option>
+                                          <option value="21">Day 21</option>
+                                          <option value="30">Month</option>
+                                          <option value="365">Year</option>
+                                      </select>
+                                      <button class="input-group-text" id="basic-addon1"><i class="bi bi-search"></i></button>
+                                  </div>
+                              </form>
+                            --->
+                            <form class="search-form d-flex align-items-center" method="POST" action="#">
+                                <div class="dashboard-top-input-wrap">
+
+                                    <div class="dashboard-top-date-range-wrap">
+                                        <div id="reportrange" class="form-select w-100">
+                                            <i class="bi bi-calendar-event-fill"></i>&nbsp;
+                                            <span></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="dashboard-content-wrap">
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <div class="dash-card">
+                                    <div class="dash-card-header">
+                                        <a href="" class="btn btn-full">Interest Map Tag Cloud <i
+                                                class="bi bi-chevron-right"></i></a>
+                                    </div>
+                                    <div class="dash-card-body">
+                                        <div class="tag-clod-wrapper">
+                                            <!-- <canvas id="check" style="width: 100%;"></canvas> -->
+                                            <div id="word_cloud_render" class="wordcloud">
+                                                <span></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="dash-card-footer">
+                                        <ul class="interest-list">
+                                            <li><span id="pages"></span> URI Vested</li>
+                                            <li><span id="totalVideo"></span> Video Watched</li>
+                                            <li><span id="duration"></span> minutes time spends</li>
+                                            <li><span id="comments"></span> Comments made</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <div class="dash-card">
+
+                                    <div class="dash-card-header" id="myDashCardHeader">
+                                        <a href="#" class="btn btn-full">Language Accuracy Map<i
+                                                class="bi bi-chevron-right"></i></a>
+                                    </div>
+                                    <div class="dash-card-body">
+                                        <div class="lang-accuracy-wrap">
+                                            <div class="lang-accuracy-top">
+                                                <div class="lang-accuracy-title">
+                                                    <h5>Language Accuracy</h5>
+                                                </div>
+                                                <div class="lang-accuracy-top-chart">
+                                                    <div class="language-chart" data-percent="73"></div>
+                                                </div>
+                                            </div>
+                                            <div class="lang-accuracy-bot">
+                                                <ul class="lang-accuracy-list">
+                                                    <li>
+                                                        <i class="bi bi-check2"></i><span id="gr-correct">99%</span>
+                                                        Grammatically Correct
+                                                        Sentence
+                                                    </li>
+                                                    <li><i class="bi bi-check2"></i><span id="sp-correct">100%</span>
+                                                        Accuracy on spelling</li>
+                                                    <li>
+                                                        <i class="bi bi-check2"></i><span id="fl-correct">9%</span>
+                                                        fluent with <span id="rt-correct">96%</span> Right impression
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <div class="dash-card">
+                                    <div class="dash-card-header" id="emotion_page">
+                                        <a href="#" class="btn btn-full">Emotion & Tonality <i
+                                                class="bi bi-chevron-right"></i></a>
+                                    </div>
+                                    <div class="dash-card-body">
+                                        <div class="tonality-emotion-wrap">
+                                            <div class="tonality-wrap">
+                                                <div class="tonality-chart"></div>
+                                            </div>
+                                            <div class="emotion-wrap">
+                                                <div class="emotion-chart"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="dash-card-footer">
+                                        <p><span>65%</span> agentive in tonality expression is sad in <span>85%</span>
+                                            cases</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <div class="dash-card">
+                                    <div class="dash-card-header" id="screen_time">
+                                        <a href="#" 
+                                            class="btn btn-full">
+                                            Screen
+                                            time <i class="bi bi-chevron-right"></i>
+                                        </a>
+
+                                    </div>
+                                    <div class="dash-card-body">
+                                        <div class="screen-time-chart-wrap">
+                                            <div class="screen-time-chart"></div>
+                                        </div>
+                                    </div>
+                                    <div class="dash-card-footer">
+                                        <p>Total Screen time - <span id="sc-time"></span></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <!-- End #main -->
+    <!-- ======= Footer ======= -->
+    <footer id="footer" class="footer">
+        <div class="copyright">
+            &copy; Copyright <strong><span>Parental Control</span></strong>. All Rights Reserved
+        </div>
+    </footer>
+    <!-- End Footer -->
+
+    <a href="#" class="back-to-top d-flex align-items-center justify-content-center">
+        <i class="bi bi-arrow-up-short"></i>
+    </a>
+
+
+
+    <!-- Vendor JS Files -->
+    <script src="{{ url_for('static', filename='assets/vendor/jquery/jquery_3-70_min.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+
+    <script src="{{ url_for('static', filename='assets/vendor/wordCloud/wordCloud.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/vendor/apexcharts/apexcharts.min.js') }}"></script>
+
+    <script src="{{ url_for('static', filename='assets/vendor/momentJs/moment.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/vendor/daterangepicker/daterangepicker.min.js') }}"></script>
+
+    <!-- Template Main JS File -->
+    <script src="{{ url_for('static', filename='assets/js/main.js') }}"></script>
+    <script>
+        // Create ApexCharts instances for tonality and emotion outside of the event listener
+
+        // Call the  function to create the area chart for screen time
+
+        // Initialize the ApexCharts for the radial bar chart
+        let radialBarChart;
+
+        // Default value
+        let selectedValue = 10;
+
+        // Function to create and render the radial bar chart
+        function createRadialBarChart(value) {
+            let color; if (value < 20) { color = "#FF0000"; } else if (value < 50) { color = "#FFA500"; } else { color = "#0d6efd"; }
+
+            const progressOptions = {
+                chart: { height: 280, type: "radialBar", }, series: [Math.round(value)],
+                colors: [color],
+                plotOptions: {
+                    radialBar: {
+                        hollow: { margin: 0, size: "70%", background: "#ffffff", },
+                        track: {
+                            dropShadow: { enabled: true, top: 2, left: 0, blur: 4, opacity: 0.15, },
+                        },
+                        dataLabels: {
+                            name: { offsetY: 0, color: "#000", fontSize: "10px", },
+                            value: { color: "#000", fontSize: "30px", show: true, offsetY: -8, },
+
+                        },
+
+
+                    },
+                },
+                fill: {
+                    type: "gradient",
+                    gradient: {
+                        shade: "dark", type: "vertical", gradientToColors: ["#0d6efd"], stops: [0, 100],
+
+                    },
+                },
+                stroke: { lineCap: "round", },
+
+                labels: [""],
+
+            };
+
+            // Check if the chart instance exists
+            if (radialBarChart) {
+                radialBarChart.updateSeries([Math.round(value)]);
+
+
+            } else {
+                // Create a new radial bar chart instance
+                radialBarChart = new ApexCharts(document.querySelector(".language-chart"), progressOptions);
+                // Render the chart
+
+                radialBarChart.render();
+
+            }
+        }
+        // Initialize the ApexCharts for emotion and tonality
+        let emotionChart;
+        let tonalityChart;
+        let screenTimeChart;
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Create ApexCharts instances for emotion and tonality with initial data
+            emotionChart = new ApexCharts(document.querySelector(".emotion-chart"), getChartOptions("Emotion"));
+            tonalityChart = new ApexCharts(document.querySelector(".tonality-chart"), getChartOptions("Tonality"));
+            screenTimeChart = new ApexCharts(document.querySelector(".screen-time-chart"), getScreenTimeChartOptions());
+
+            // Render the initial charts
+            emotionChart.render();
+            tonalityChart.render();
+            screenTimeChart.render();
+        });
+
+        // Function to get initial chart options
+        function getChartOptions(title) {
+            return {
+                series: [100], // Default data
+                chart: {
+                    height: 350,
+                    type: "donut",
+                },
+                colors: ["#1ab7ea", "#0084ff", "#39539E", "#0077B5"],
+                dataLabels: { enabled: true },
+                legend: { show: true, position: "bottom", fontSize: "14" },
+                labels: [`${title} Not Found`], // Default labels
+            };
+        }
+
+        // Function to update the emotion chart
+        function updateEmotionChart(data) {
+            emotionChart.updateOptions({
+                series: data.series || [100],
+                labels: data.labels || ["Emotion Not Found"],
+            });
+        }
+
+        // Function to update the tonality chart
+        function updateTonalityChart(data) {
+            tonalityChart.updateOptions({
+                series: data.series || [100],
+                labels: data.labels || ["Tonality Not Found"],
+            });
+        }
+        // Function to get initial chart options for screen time
+        function getScreenTimeChartOptions() {
+            return {
+                series: [{
+                    name: "Screen Time",
+                    data: []
+                }],
+                chart: {
+                    height: 350,
+                    type: "area",
+                },
+                xaxis: {
+                    type: "datetime",
+                },
+                dataLabels: {
+                    enabled: false,
+                },
+                stroke: {
+                    curve: "smooth",
+                },
+                tooltip: {
+                    x: {
+                        format: "dd/MM/yy HH:mm",
+                    },
+                },
+            };
+        }
+        function updateScreenTimeChart(data) {
+            screenTimeChart.updateOptions({
+                series: [{
+                    data: data.series || [],
+                }],
+                xaxis: {
+                    categories: data.labels || [],
+                },
+            });
+        }
+        /*
+      
+         filterDataByTimePeriod
+      
+      
+        */
+        const give_filterDataByTimePeriod = (rawData, selectedTimePeriod) => {
+            const currentDate = new Date(); let thresholdDate = new Date(currentDate);
+
+            if (selectedTimePeriod !== 1) { thresholdDate.setDate(currentDate.getDate() - selectedTimePeriod); }
+
+            // Filter the rawData based on the timestamp
+            const filterData = rawData.filter((item) => {
+                // Split the concatenated timestamps into individual timestamps
+                const timestamps = item.timestamp.split(/\s+/);
+
+                // Iterate through each timestamp and check if it's within the selected time period
+                for (const timestamp of timestamps) { const timestampDate = new Date(timestamp); if (!isNaN(timestampDate.getTime()) && timestampDate >= thresholdDate) { return true; } }
+
+                return false; // Exclude the item if none of the timestamps match the condition
+            });
+
+            return filterData;
+        }
+        const date_filterDataByDateRange = (rawData, startDate, endDate) => {
+            // Filter the rawData based on the timestamp
+            const filterData = rawData.filter((item) => {
+                const timestampDate = new Date(item.timestamp);
+
+                // Check if the timestamp is within the selected date range
+                return timestampDate >= startDate && timestampDate <= endDate;
+            });
+
+            return filterData;
+        };
+
+        //screentime_filter
+        const screen_filterDataByTimePeriod = (rawData, selectedTimePeriod) => {
+            const currentDate = new Date();
+            let thresholdDate = new Date(currentDate);
+
+            if (selectedTimePeriod !== 1) {
+                thresholdDate.setDate(currentDate.getDate() - selectedTimePeriod);
+            }
+
+            // Filter the rawData based on the timestamp
+            const filterData = rawData[1].filter((timestamp) => {
+                const timestampDate = new Date(timestamp);
+                return !isNaN(timestampDate.getTime()) && timestampDate >= thresholdDate;
+            });
+
+            // Create a new array combining the filtered timestamps and associated values
+            const filteredData = [
+                rawData[0].filter((_, index) => rawData[1].includes(filterData[index])),
+                filterData
+            ];
+
+            return filteredData;
+        };
+        const radial_chart_data_serialize = (rawData) => {
+            if (rawData !== undefined) {
+
+
+
+                // Now, 'filterData' contains the filtered data based on the selected time period
+                let grammarCorrect = []; let spellCorrect = []; let fluency = []; let impression = [];
+
+                for (let item of rawData) {
+                    grammarCorrect.push(100 - item['grammer_mistake_count']);
+                    console.log(item['grammer_mistake_count']);
+                    spellCorrect.push(item['spell_mistake_count']);
+                    fluency.push(item['fluent']);
+                    impression.push(item['impression']);
+                }
+
+                let grammarCorrectAverage = grammarCorrect.reduce((acc, val) => acc + val, 0) / grammarCorrect.length;
+                let spellCorrectAverage = spellCorrect.reduce((acc, val) => acc + val, 0) / spellCorrect.length;
+                let fluencyAverage = fluency.reduce((acc, val) => acc + val, 0) / fluency.length;
+                let impressionAverage = impression.reduce((acc, val) => acc + val, 0) / impression.length;
+
+                let result = [grammarCorrectAverage, spellCorrectAverage, fluencyAverage, impressionAverage, rawData];
+                return result
+
+            }
+            else {
+                [0, 0, 0, 0, []]
+            }
+
+        }
+        function convertDateString(inputDateString) {
+            var date = new Date(inputDateString);
+
+            if (isNaN(date)) {
+                return null; // Invalid date string
+            }
+
+            var year = date.getUTCFullYear();
+            var month = (date.getUTCMonth() + 1).toString().padStart(2, '0');
+            var day = date.getUTCDate().toString().padStart(2, '0');
+            var hours = date.getUTCHours().toString().padStart(2, '0');
+            var minutes = date.getUTCMinutes().toString().padStart(2, '0');
+            var seconds = date.getUTCSeconds().toString().padStart(2, '0');
+
+            var formattedDate = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.000+00:00`;
+            return formattedDate;
+        }
+        /*
+         Word Cloud Structured Data
+      
+      
+        */
+        const give_structured_array = (raw_array) => {
+            const values = raw_array.map(el => { return el.sec })
+            const newData = raw_array.filter(el => { el.percent = give_Percentile(values, el.sec); return el })
+
+            const newlist = []
+
+            newData.forEach(element => { newlist.push([element.keyword, Math.floor(element.percent), element.comment, element.video_url, element.pages, element.sec]) });
+            //console.warn(filteredData)
+            const uniqueValues = {};
+            const filteredData = newlist.filter(item => {
+                const value = item[1]; if (!uniqueValues.hasOwnProperty(value)) {
+                    uniqueValues[value] = true; return true; // Keep the item in the filtered array
+                }
+                return false; // Remove the duplicate item
+            });
+            return newlist
+        }
+        /* give_Percentile */
+        const give_Percentile = (arr, val) => { let count = 0; arr.forEach(v => { if (v < val) { count++; } else if (v == val) { count += 0.5; } }); return 100 * count / arr.length; }
+        /* give_Percentile */
+        function removePrefixAndCom(domain) { return domain.replace(/^(web\.|app\.|app\.|www\.|chat\.)/, '').replace(/\.com$/, ''); }
+
+        // Function to restructure the array
+        function restructureArray(data) { const restructuredData = []; for (const item of data) { const domain = removePrefixAndCom(item[0]); restructuredData.push([domain, ...item.slice(1)]); } return restructuredData; }
+
+        /*
+        Tonality Emotton array structuring
+        */
+        const tonality_and_emotion_array = (filtered_data) => {
+            const seenComments = new Set();
+            const filteredComments = [];
+            const tonality = [];
+            const emotion = [];
+
+            for (const entry of filtered_data) {
+                if ('comment' in entry) {
+                    const commentList = entry['comment'];
+                    if (Array.isArray(commentList)) {
+                        for (const commentEntry of commentList) {
+                            if ('comment' in commentEntry) {
+                                const commentText = commentEntry['comment'];
+                                if (!seenComments.has(commentText)) {
+                                    seenComments.add(commentText);
+                                    filteredComments.push(commentEntry);
+                                    if ('tonality' in commentEntry) {
+                                        tonality.push(commentEntry['tonality']);
+                                    }
+                                    if ('emotion' in commentEntry) {
+                                        emotion.push(commentEntry['emotion']);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Calculate unique values and corresponding percentiles for tonality
+            const uniqueValuesTon = [];
+            const uniquePercentilesTon = [];
+
+            for (const value of tonality) {
+                if (!uniqueValuesTon.includes(value)) {
+                    uniqueValuesTon.push(value);
+                    const percentile = calculatePercentile(tonality, value);
+                    uniquePercentilesTon.push(percentile);
+                }
+            }
+
+            // Calculate unique labels and corresponding percentiles for emotion
+            const uniqueValEmo = [];
+            const uniquePercentilesEmo = [];
+
+            for (const label of emotion) {
+                if (!uniqueValEmo.includes(label)) {
+                    uniqueValEmo.push(label);
+                    const percentile = calculatePercentile(emotion, label);
+                    uniquePercentilesEmo.push(percentile);
+                }
+            }
+
+            // Define a function to calculate percentiles
+            function calculatePercentile(valueList, value) {
+                const count = valueList.reduce((accumulator, currentValue) => {
+                    return currentValue === value ? accumulator + 1 : accumulator;
+                }, 0);
+
+                return (count / valueList.length) * 100;
+            }
+
+            var tonEmo_data = [];
+            if (filteredComments.length > 0) {
+                tonEmo_data.push({
+                    'ton': [uniqueValuesTon, uniquePercentilesTon],
+                    'emo': [uniqueValEmo, uniquePercentilesEmo],
+                    'tot_comments': filteredComments.length,
+                });
+            } else {
+                tonEmo_data.push({
+                    'ton': [['Tonality Not Found'], [[100]]],
+                    'emo': [['Emotion Not Found'], [[100]]],
+                    'tot_comments': 0,
+                });
+            }
+            return tonEmo_data;
+        };
+        const wordWrap = document.getElementById("word_cloud_render")
+        function createWordCloud(list) {
+            // Your WordCloud configuration options and click handler
+            const options = {
+                list: list, fontFamily: "Lato, serif", rotateRatio: 0.5, shape: "star", rotationSteps: 2, backgroundColor: "#ffffff", gridSize: 15,
+                shrinkToFit: true, // Enable shrinkToFit
+                weightFactor: 1, hover: window.drawBox, shape: "circle",
+                click: function (item) {
+                    function hourMin(sec) { let totalSeconds = sec; let hours = Math.floor(totalSeconds / 3600); let minutes = Math.floor((totalSeconds % 3600) / 60); return (hours + " hours " + minutes + ""); }
+
+                    const encodedData = encodeURIComponent(JSON.stringify(item));
+                    const url = `/interest?data=${encodedData}`;
+                    window.open(url, '_blank');
+                },
+            };
+
+            // Create the WordCloud
+            WordCloud(wordWrap, options);
+        }
+        /*
+        child Event Listener On Submit Event
+        
+        */
+
+
+
+        const dt2s = (cid, start, end) => {
+            const ob_data = {
+                childID: cid, // Replace cID with the actual data you want to send
+
+                startdate: start,
+                endDate: end // Replace 'value' with any additional data you want to send}
+
+
+            }
+            return ob_data
+        }
+
+
+
+
+
+
+        /*
+        
+        Update Page Element
+        
+        */
+
+        const update_screentime_element = (time_array) => {
+            console.log(time_array)
+
+
+            let total_time = time_array.reduce((acc, el) => acc + el, 0);
+            console.log(total_time)
+
+            document.getElementById('sc-time').textContent = secondsToTime(total_time)
+
+        }
+        const secondsToTime = (seconds) => (seconds < 60 ? `${seconds} sec` : (seconds < 3600 ? `${Math.floor(seconds / 60)} min ${seconds % 60} sec` : `${Math.floor(seconds / 3600)} hour ${Math.floor((seconds % 3600) / 60)} min ${seconds % 60} sec`));
+
+
+
+
+
+    </script>
+
+    <script>
+        // mainDoc
+        // main document script
+        $(document).ready(function () {
+            var start = moment().subtract(29, 'days');
+            var end = moment();
+            const kd = {{ wordcloud_data | tojson
+        }};
+        const child_ID = JSON.parse({{ child_id | tojson }});
+        var dashCardHeader = document.getElementById('myDashCardHeader');
+        var emoCardHeader = document.getElementById('emotion_page');
+        var screenCardHeader = document.getElementById('screen_time');
+
+        // Define the data you want to send
+        var starts = "start"
+        var ends = "ends"
+
+
+
+        const dataarray = kd.filter(el => { if (el.keyword !== 'localhost:4000') { return el } })
+        const language_accuracy = {{ language_accurac | tojson}}
+        const urls_array = {{ all_url | tojson}}
+        console.log(urls_array)
+
+
+
+        const lang_acc = language_accuracy[4]
+        console.log(lang_acc)
+        const count_Data = JSON.parse({{ count_data | tojson }});
+
+        const screen_Time = JSON.parse({{ screenTime | tojson }});
+
+
+        function updateDateRangeText(start, end) {
+            $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+        }
+
+        $('#reportrange').daterangepicker({
+            startDate: start,
+            endDate: end,
+            ranges: {
+                'Today': [moment(), moment()],
+                'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                'This Month': [moment().startOf('month'), moment().endOf('month')],
+                'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+            }
+        }, function (selectedStartDate, selectedEndDate) {
+
+            console.log('Selected Start Date:', selectedStartDate.format('MMMM D, YYYY'));
+            console.log('Selected End Date:', selectedEndDate.format('MMMM D, YYYY'));
+            starts = selectedStartDate.format('MMMM D, YYYY')
+            ends = selectedEndDate.format('MMMM D, YYYY')
+
+            dataToSend = { startdate: convertDateString(selectedStartDate), endDate: convertDateString(selectedEndDate), child_ID: child_ID }
+            //language page
+            dashCardHeader.addEventListener('click', function (e) {
+
+                var queryString = Object.keys(dataToSend)
+                    .map(function (key) {
+                        return key + '=' + encodeURIComponent(dataToSend[key]);
+                    }).join('&');
+
+                // Define the URL where you want to send the data
+                var url = "{{ url_for('language_accuracy_page2') }}" + '?' + queryString;
+
+                // Open the URL in a new tab
+                console.log(queryString)
+                window.open(url, '_blank');
+
+            });
+
+            // tonalityemotion page
+            emoCardHeader.addEventListener('click', function (e) {
+
+                var queryString = Object.keys(dataToSend)
+                    .map(function (key) {
+                        return key + '=' + encodeURIComponent(dataToSend[key]);
+                    }).join('&');
+
+                // Define the URL where you want to send the data
+                var url = "{{ url_for('tonality_emotion') }}" + '?' + queryString;
+
+                // Open the URL in a new tab
+                console.log(queryString)
+                window.open(url, '_blank');
+
+            });
+
+            // scrren time page
+            screenCardHeader.addEventListener('click', function (e) {
+
+            var queryString = Object.keys(dataToSend)
+                .map(function (key) {
+                    return key + '=' + encodeURIComponent(dataToSend[key]);
+                }).join('&');
+
+            // Define the URL where you want to send the data
+            var url = "{{ url_for('screen_time') }}" + '?' + queryString;
+
+            // Open the URL in a new tab
+            console.log(queryString)
+            window.open(url, '_blank');
+
+            });
+
+            const filteredData = filterDataByDateRange(dataarray, selectedStartDate, selectedEndDate);
+            const filterData_lang_acc = filterDataByDateRange_lang_acc(lang_acc, selectedStartDate, selectedEndDate)
+            const chart_bar_data = radial_chart_data_serialize(filterData_lang_acc)
+            createRadialBarChart(((chart_bar_data[0] + chart_bar_data[1]) / 2));
+
+
+
+
+
+
+
+
+
+            filterDataByDateRange_urls(urls_array, selectedStartDate, selectedEndDate)
+
+            update_language_elements(chart_bar_data)
+            //const language_radial_chart_result = radial_chart_data_serialize(selectedTimePeriod,lang_acc_data_by_timestamp)
+            // console.log('Matching Timestamp:', filteredData[0].timestamp); // Log the first matching timestamp
+            displayFilteredData(filteredData);
+            const screen_time_data = filterArraysByDateRange_screenTime(screen_Time, selectedStartDate, selectedEndDate)
+            console.log(screen_time_data)
+
+
+
+
+            updateDateRangeText(selectedStartDate, selectedEndDate);
+            // Get the dash-card-header element by its ID
+
+
+
+            // Add a click event listener to the dash-card-header element
+            //event_lang_chart
+
+        });
+
+        updateDateRangeText(start, end);
+
+        // Function to filter data by date range
+        // Function to filter data by date range
+        // Function to filter data by date range
+        // Function to filter data by date range
+        function filterDataByDateRange(data, startDate, endDate) {
+            return data.filter(item => {
+                // Check if the item has a 'timestamp' property
+                if (item.hasOwnProperty('timestamp')) {
+                    // Use regular expression to match timestamps in the format 'YYYY-MM-DD HH:mm:ss.SSSSSS'
+                    const timestampRegex = /\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{6}/g;
+                    const timestamps = item.timestamp.match(timestampRegex);
+
+                    if (!timestamps) {
+                        return false; // No valid timestamps found
+                    }
+
+                    for (const timestamp of timestamps) {
+                        const timestampDate = moment(timestamp, 'YYYY-MM-DD HH:mm:ss.SSSSSS');
+
+                        if (timestampDate.isBetween(startDate, endDate, null, '[]')) {
+
+                            return true; // Return true if any timestamp is within the selected date range
+                        }
+                    }
+                }
+
+                return false; // Return false if 'timestamp' property is not present or no timestamps match the condition
+            });
+        }
+        function filterDataByDateRange_lang_acc(data, startDate, endDate) {
+            if (data !== undefined) {
+                return data.filter(item => {
+                    const timestampDate = moment(item.time["$date"]);
+                    return timestampDate.isBetween(startDate, endDate, null, '[]');
+                });
+            }
+            else return [0, 0, 0, 0, []]
+        }
+        function filterArraysByDateRange_screenTime(dataarray, startDate, endDate) {
+            const filteredData = [
+                dataarray[0].filter((_, index) => {
+                    const timestampDate = moment(dataarray[1][index]);
+                    return timestampDate.isBetween(startDate, endDate, null, '[]');
+                }),
+                dataarray[1].filter((timestamp) => {
+                    const timestampDate = moment(timestamp);
+                    return timestampDate.isBetween(startDate, endDate, null, '[]');
+                })
+            ];
+
+            return filteredData;
+        }
+
+        function filterDataByDateRange_urls(dataarray, startDate, endDate) {
+            const filter_urls = dataarray.filter(item => {
+                const timestampDate = moment(item.timestamp, 'YYYY-MM-DD HH:mm:ss');
+                return timestampDate.isBetween(startDate, endDate, null, '[]');
+            })
+
+            let total_duration = 0; // Total duration (sum of all sec values)
+            let total_url = 0;     // Total count of all URLs
+            let total_youtube_url = 0; // Total count of YouTube URLs
+
+            filter_urls.forEach(item => {
+                total_duration += item.sec; // Add sec to total_duration
+                total_url++;               // Increment total_url
+
+                // Check if the URL is a YouTube URL
+                if (item.url.includes("youtube.com")) {
+                    total_youtube_url++; // Increment total_youtube_url for YouTube URLs
+                }
+            });
+            console.log(startDate)
+            console.log(filter_urls)
+            console.log(endDate)
+            document.getElementById('pages').textContent = total_url;
+            document.getElementById('totalVideo').textContent = total_youtube_url;
+            document.getElementById('duration').textContent = hourMin(total_duration);
+
+
+            console.log("Total Duration:", hourMin(total_duration));
+            console.log("Total URL Count:", total_url);
+            console.log("Total YouTube URL Count:", total_youtube_url);
+            function hourMin(sec) { let totalSeconds = sec; let hours = Math.floor(totalSeconds / 3600); let minutes = Math.floor((totalSeconds % 3600) / 60); return (hours + " hours " + minutes + ""); }
+            data = Array()
+            cat = Array()
+            filter_urls.map(item => {
+                data.push(item.sec)
+                cat.push(item.timestamp)
+            });
+            console.log([data, cat])
+            updateScreenTimeChart({ series: data, labels: cat, });
+            update_screentime_element(data)
+        }
+
+
+
+        // Function to display filtered data
+        function displayFilteredData(filteredData) {
+            console.log(filteredData);
+            const structured_array_data = give_structured_array(filteredData)
+            const final_data_for_wc = restructureArray(structured_array_data)
+            createWordCloud(final_data_for_wc)
+
+            const tonality_emotion_array = tonality_and_emotion_array(filteredData)
+            const emo = tonality_emotion_array[0]['ton']
+            const ton = tonality_emotion_array[0]['emo']
+
+            const tonalityData = { series: ton[1], labels: ton[0], };
+
+            const emotionData = { series: emo[1], labels: emo[0], };
+
+
+            // Update the charts with new data
+            updateEmotionChart(emotionData);
+            updateTonalityChart(tonalityData);
+
+
+
+        }
+
+        function update_language_elements(result) {
+            console.log(result)
+            /*
+               document.getElementById('gr-correct').textContent = result[0].toFixed(2)
+            document.getElementById('sp-correct').textContent = result[1].toFixed(2)
+            document.getElementById('fl-correct').textContent = result[2].toFixed(2)
+            document.getElementById('rt-correct').textContent = result[3].toFixed(2)
+            
+            */
+            const comm = result[4].filter(el => el.length > 0);
+            document.getElementById('gr-correct').textContent = result[0].toFixed(2)
+            document.getElementById('sp-correct').textContent = result[1].toFixed(2)
+            document.getElementById('fl-correct').textContent = result[2].toFixed(2)
+            document.getElementById('rt-correct').textContent = result[3].toFixed(2)
+            document.getElementById('comments').textContent = comm.length
+
+        }
+    });
+    </script>
+
+
+    <script>
+
+    </script>
+
+
+
+
+
+
+
+</body>
+
+
+
+
+
+
+</html>

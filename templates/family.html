@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+
+    <title>Family -- Parental Control</title>
+    <meta content="" name="description" />
+    <meta content="" name="keywords" />
+
+ <!-- Favicons -->
+<link href="{{ url_for('static', filename='assets/img/favicon.png') }}" rel="icon">
+<link href="{{ url_for('static', filename='assets/img/apple-touch-icon.png') }}" rel="apple-touch-icon">
+
+<!-- Vendor CSS Files -->
+<link href="{{ url_for('static', filename='assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='assets/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/datatables/datatable.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='assets/css/font.css') }}">
+
+<!-- Template Main CSS File -->
+<link href="{{ url_for('static', filename='assets/css/default.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='assets/css/style.css') }}" rel="stylesheet">
+
+
+  </head>
+
+  <body>
+    <!-- ======= Header ======= -->
+    <header id="header" class="header fixed-top d-flex align-items-center">
+      <div class="container-fluid">
+        <div class="header-inner">
+          <div class="d-flex align-items-center justify-content-between">
+            <a href="{{ url_for('hello_tracer') }}" class="logo d-flex align-items-center">
+              <span class="d-none d-lg-block">Dashboard</span>
+            </a>
+            <!-- <i class="bi bi-list toggle-sidebar-btn"></i> -->
+          </div>
+          <!-- End Logo -->
+          <nav class="header-nav ms-auto">
+            <ul class="d-flex align-items-center">
+              <li class="nav-item dropdown">
+                <a class="nav-link nav-icon" href="./dashboard.html"> Dashboard </a>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link nav-icon" href="#"> Family </a>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link btn logout-btn" href="{{ url_for('logout') }}" >
+                  <i class="bi bi-power"></i>
+                  Logout
+                </a>
+              </li>
+            </ul>
+          </nav>
+          <!-- End Icons Navigation -->
+        </div>
+      </div>
+    </header>
+    <!-- End Header -->
+
+    <main id="main" class="main">
+      <section id="dashboard-main-sec">
+        <div class="container">
+          <div class="dashborad-main-wrapper">
+            <div class="dashboard-top-wrap">
+              <div class="family-top-wrap">
+                <div class="parent-id">
+                  <p>Parent Login Id: <span> {{username}}</span></p>
+                </div>
+                <div class="child-name">
+                  <p>Child Name: <span>{{childName}}</span></p>
+                </div>
+              </div>
+            </div>
+            <div class="dashboard-content-wrap">
+              <div class="table-wrapper family-table-wrapper">
+                <table class="family-table table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Comment</th>
+                            <th>Emotion</th>
+                            <th>Tonality</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                      {% for each in emo_ton%}
+                        <tr>
+                            <td>{{each['date']}}</td>
+                            <td>{{each['comment']}}</td>
+                            <td>{{each['emotion']}}</td>
+                            <td>{{each['tonality']}}</td>
+                        </tr>
+                      {% endfor %}
+                    </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <!-- End #main -->
+
+    <!-- ======= Footer ======= -->
+    <footer id="footer" class="footer">
+      <div class="copyright">
+        &copy; Copyright <strong><span>Parental Control</span></strong
+        >. All Rights Reserved
+      </div>
+    </footer>
+    <!-- End Footer -->
+
+    <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+   <!-- Vendor JS Files -->
+<script src="{{ url_for('static', filename='assets/vendor/jquery/jquery_3-70_min.js') }}"></script>
+<script src="{{ url_for('static', filename='assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+<script src="{{ url_for('static', filename='assets/vendor/datatables/datatable.js') }}"></script>
+
+<!-- Template Main JS File -->
+<script src="{{ url_for('static', filename='assets/js/main.js') }}"></script>
+
+    <script>
+      $(document).ready(function () {
+        $(".family-table").DataTable();
+      });
+    </script>
+  </body>
+</html>

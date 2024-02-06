@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+
+    <title>Language Accuracy -- Parental Control</title>
+    <meta content="" name="description" />
+    <meta content="" name="keywords" />
+
+   <!-- Favicons -->
+<link href="{{ url_for('static', filename='assets/img/favicon.png') }}" rel="icon">
+<link href="{{ url_for('static', filename='assets/img/apple-touch-icon.png') }}" rel="apple-touch-icon">
+
+<!-- Vendor CSS Files -->
+<link href="{{ url_for('static', filename='assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='assets/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/datatables/datatable.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='assets/css/font.css') }}">
+
+<!-- Template Main CSS File -->
+<link href="{{ url_for('static', filename='assets/css/default.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='assets/css/style.css') }}" rel="stylesheet">
+
+  </head>
+
+  <body>
+    <!-- ======= Header ======= -->
+    <header id="header" class="header fixed-top d-flex align-items-center">
+      <div class="container-fluid">
+        <div class="header-inner">
+          <div class="d-flex align-items-center justify-content-between">
+            <a href="{{ url_for('hello_tracer') }}" class="logo d-flex align-items-center">
+              <span class="d-none d-lg-block">Dashboard</span>
+            </a>
+            <!-- <i class="bi bi-list toggle-sidebar-btn"></i> -->
+          </div>
+          <!-- End Logo -->
+          <nav class="header-nav ms-auto">
+            <ul class="d-flex align-items-center">
+              <li class="nav-item dropdown">
+                <a class="nav-link nav-icon" href="./family.html">Parent</a>
+              </li>
+              <li class="nav-item dropdown">
+              
+                <a class="nav-link nav-icon" href="#" style="color: blueviolet;">child</a>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link btn logout-btn" href="{{ url_for('logout') }}">
+                  <i class="bi bi-power"></i>
+                  Logout
+                </a>
+              </li>
+            </ul>
+          </nav>
+          <!-- End Icons Navigation -->
+        </div>
+      </div>
+    </header>
+    <!-- End Header -->
+
+    <main id="main" class="main">
+      <section id="dashboard-main-sec">
+        <div class="container">
+          <div class="dashborad-main-wrapper">
+            <div class="dashboard-top-wrap">
+              <div class="family-top-wrap">
+                <div class="parent-id">
+                  <p>Language Accuracy</p>
+                  <p style="color: red;">child Identity Id : {{c_id}}</p>
+                  <p style="color: green;">Start Date : {{startDate_str}}</p>
+                  <p style="color: blue;">End Date :{{endDate_str}}</p>
+
+                  
+
+                </div>
+              </div>
+            </div>
+            <div class="dashboard-content-wrap">
+              <div class="table-wrapper add-child-table-wrapper" style="width: fit-content;justify-content: center;">
+                <table class="lang-accuracy-table table table-striped">
+                  <thead>
+                    <tr>
+                      <th>Comment</th>
+                      <th>Spelling Mistakes</th>
+                      <th>Spelling Correction</th>
+                      <th>Grammar Mistakes</th>
+                      <th>Grammar Correction</th>
+                      <th>Fluent Assistant</th>
+                      <th>Correct Sentence</th>
+                      <th>Right Impression </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for mistake in grammatical_correctness %}
+                    <tr>
+                      <td>
+                        {{mistake['comment']}}
+                      </td>
+                      <td>{{mistake['misspelled_words']}}</td>
+                      <td>{{mistake['correct_words']}}</td>
+                      <td>{{mistake['grammar_mistakes']}}</td>
+                      <td>{{mistake['correction']}}</td>
+                      <td>{{mistake['fluent']}}</td>
+                      <td>{{mistake['correct_comment']}}</td>
+                     
+                      
+                      <td>{{mistake['impression']}}</td>
+                    </tr>
+                    {% endfor %}
+                    
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <!-- End #main -->
+    <!--ADD Modal -->
+    <div class="modal fade" id="totalUrls" tabindex="-1" aria-labelledby="addChildModal" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="addChildModal"><span>YouTube</span> Details</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="modal-visited-list">
+              <div class="family-top-wrap">
+                <div class="parent-id">
+                  <p>No of URL</p>
+                </div>
+              </div>
+              <div class="visited-list-bottom">
+                <ol>
+                    <li><a href="https://dummy.restapiexample.com/api/v1/employees ">https://dummy.restapiexample.com/api/v1/employees </a></li>
+                    <li><a href="https://dummy.restapiexample.com/api/v1/employees ">https://dummy.restapiexample.com/api/v1/employees </a></li>
+                    <li><a href="https://dummy.restapiexample.com/api/v1/employees ">https://dummy.restapiexample.com/api/v1/employees </a></li>
+                    <li><a href="https://dummy.restapiexample.com/api/v1/employees ">https://dummy.restapiexample.com/api/v1/employees </a></li>
+                    <li><a href="https://dummy.restapiexample.com/api/v1/employees ">https://dummy.restapiexample.com/api/v1/employees </a></li>
+                    <li><a href="https://dummy.restapiexample.com/api/v1/employees ">https://dummy.restapiexample.com/api/v1/employees </a></li>
+                </ol>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======= Footer ======= -->
+    <footer id="footer" class="footer">
+      <div class="copyright">
+        &copy; Copyright <strong><span>Parental Control</span></strong
+        >. All Rights Reserved
+      </div>
+    </footer>
+    <!-- End Footer -->
+
+    <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <!-- Vendor JS Files -->
+<script src="{{ url_for('static', filename='assets/vendor/jquery/jquery_3-70_min.js') }}"></script>
+<script src="{{ url_for('static', filename='assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+<script src="{{ url_for('static', filename='assets/vendor/datatables/datatable.js') }}"></script>
+
+<!-- Template Main JS File -->
+<script src="{{ url_for('static', filename='assets/js/main.js') }}"></script>
+
+    <script>
+      $(document).ready(function () {
+        $(".lang-accuracy-table").DataTable();
+      });
+    </script>
+  </body>
+</html>

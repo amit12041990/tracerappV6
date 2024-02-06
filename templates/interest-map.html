@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+
+    <title>Interest Map -- Parental Control</title>
+    <meta content="" name="description" />
+    <meta content="" name="keywords" />
+
+    <!-- Favicons -->
+    <link href="assets/img/favicon.png" rel="icon" />
+    <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon" />
+
+  <!-- Vendor CSS Files -->
+<link href="{{ url_for('static', filename='assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet" />
+<link href="{{ url_for('static', filename='assets/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet" />
+<link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/datatables/datatable.css') }}" />
+<link rel="stylesheet" href="{{ url_for('static', filename='assets/css/font.css') }}" />
+
+<!-- Template Main CSS File -->
+<link href="{{ url_for('static', filename='assets/css/default.css') }}" rel="stylesheet" />
+<link href="{{ url_for('static', filename='assets/css/style.css') }}" rel="stylesheet" />
+
+  </head>
+
+  <body>
+    <!-- ======= Header ======= -->
+    <header id="header" class="header fixed-top d-flex align-items-center">
+      <div class="container-fluid">
+        <div class="header-inner">
+          <div class="d-flex align-items-center justify-content-between">
+            <a href="{{ url_for('hello_tracer') }}" class="logo d-flex align-items-center">
+              <span class="d-none d-lg-block">Dashboard</span>
+            </a>
+            <!-- <i class="bi bi-list toggle-sidebar-btn"></i> -->
+          </div>
+          <!-- End Logo -->
+          <nav class="header-nav ms-auto">
+            <ul class="d-flex align-items-center">
+              <li class="nav-item dropdown">
+                <a class="nav-link nav-icon" href="./family.html">Parent</a>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link nav-icon" href="#">Child</a>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link btn logout-btn" href="{{ url_for('logout') }}">
+                  <i class="bi bi-power"></i>
+                  Logout
+                </a>
+              </li>
+            </ul>
+          </nav>
+          <!-- End Icons Navigation -->
+        </div>
+      </div>
+    </header>
+    <!-- End Header -->
+
+    <main id="main" class="main">
+      <section id="dashboard-main-sec">
+        <div class="container">
+          <div class="dashborad-main-wrapper">
+            <div class="dashboard-top-wrap">
+              <div class="family-top-wrap">
+                <div class="parent-id">
+                  <p>Interest Map Tag Cloud</p>
+                </div>
+              </div>
+            </div>
+            <div class="dashboard-content-wrap">
+              <div class="table-wrapper add-child-table-wrapper">
+                <table class="interest-tag-table table table-striped">
+                  <thead>
+                    <tr>
+                      <th>Keyword</th>
+                      <th>No. of URL Visited</th>
+                      <th>Total Time Spend</th>
+                      <th>No. of videos visited</th>
+                      <th>No of comment made</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        {{ data[0] }}
+
+                      </td>
+                      <td><a href="javascript:void(0)" data-bs-target="#totalUrls" data-bs-toggle="modal" data-data-value="Urls">{{ data[1] }}</a></td>
+                      <td>{{data[2]}} seconds</td>
+                      <td>{{ data[3] }}</td>
+                      <td><a href="javascript:void(0)" data-bs-target="#totalUrls" data-bs-toggle="modal" data-data-value="Comments">{{ data[4] }}</a></td>
+                    </tr>
+                   
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <!-- End #main -->
+    <!--ADD Modal -->
+    <div class="modal fade" id="totalUrls" tabindex="-1" aria-labelledby="addChildModal" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="addChildModal"><span id="dataTableName">YouTube</span> Details</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="modal-visited-list">
+              <div class="family-top-wrap">
+                <div class="parent-id">
+                  <p>Recorded Data</p>
+                </div>
+              </div>
+              <div class="visited-list-bottom">
+                <ol id="dataVal">
+                    
+                </ol>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======= Footer ======= -->
+    <footer id="footer" class="footer">
+      <div class="copyright">
+        &copy; Copyright <strong><span>Parental Control</span></strong
+        >. All Rights Reserved
+      </div>
+    </footer>
+    <!-- End Footer -->
+
+    <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+    <!-- Vendor JS Files -->
+    <script src="{{ url_for('static', filename='assets/vendor/jquery/jquery_3-70_min.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    
+    <!-- <script src="./assets/vendor/apexcharts/apexcharts.min.js"></script> -->
+    <!-- <script src="./assets/vendor/chart.js/chart.umd.js"></script> -->
+    <!-- <script src="./assets/vendor/echarts/echarts.min.js"></script> -->
+    <!-- <script src="./assets/vendor/quill/quill.min.js"></script> -->
+    <!-- <script src="./assets/vendor/simple-datatables/simple-datatables.js"></script> -->
+    <!-- <script src="./assets/vendor/tinymce/tinymce.min.js"></script> -->
+    <!-- <script src="./assets/vendor/php-email-form/validate.js"></script> -->
+    <!-- <script src="./assets/vendor/wordCloud/wordCloud.js"></script> -->
+    <!-- <script src="./assets/vendor/easy-pie-chart/easy-pie-chart.js"></script> -->
+    <script src="{{ url_for('static', filename='assets/vendor/datatables/datatable.js') }}"></script>
+
+
+    <!-- Template Main JS File -->
+    <script src="../assets/js/main.js"></script>
+    <script>
+      $(document).ready(function () {
+        $(".interest-tag-table").DataTable();
+    
+        // Define the urlTable function to handle dynamic data
+        function urlTable(data) {
+          // Get the value of data-data-value attribute from the clicked link
+          var dataValue = $(data).data('data-value');
+          var orderList = document.getElementById('dataVal')
+          function clearList() {while (orderList.firstChild) {orderList.removeChild(orderList.firstChild);}}
+          if (dataValue === 'Urls'){
+            clearList();
+            urlsList = {{urls | tojson }}
+            console.log(urlsList)
+            urlsList.forEach(url=> {
+              var listItem = document.createElement("li");
+              var anchor = document.createElement("a");
+              anchor.href = url;
+              anchor.textContent = url;
+              listItem.appendChild(anchor);
+              orderList.appendChild(listItem);
+            });
+          }
+          else if (dataValue==='Comments'){
+            clearList();
+            comments = {{comments | tojson }}
+            console.log(comments)
+            comments.forEach(comment=> {
+              var listItem = document.createElement("li");
+              var anchor = document.createElement("a");
+              anchor.href = comment;
+              anchor.textContent = comment;
+              listItem.appendChild(anchor);
+              orderList.appendChild(listItem);
+            });
+
+          }
+     
+          else {
+              alert('sorry we try to fix this')
+          }
+          // Set the value in the modal
+          $('#dataTableName').text(dataValue);
+          
+          // You can add code here to load dynamic content into the modal
+        }
+        
+        // Attach the click event handler to the links with data-data-value attribute
+        $('[data-bs-toggle="modal"]').on('click', function () {
+          urlTable(this);
+        });
+      });
+    </script>
+    <script>
+      // Function to clear the list
+
+    </script>
+  </body>
+</html>

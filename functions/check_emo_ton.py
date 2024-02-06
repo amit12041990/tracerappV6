@@ -15,7 +15,7 @@ def analysis(user_input, filename):
 
     # Counting the value of emotions
     result = df['Emotion'].value_counts()
-    print(result)
+    #print(result)
 
     # Preprocessing
     df['Clean_Text'] = df['Text'].apply(ntf.remove_userhandles)
@@ -34,7 +34,7 @@ def analysis(user_input, filename):
     x_test_tfidf = tfidf.transform(x_test)
 
     # Logistic Regression model
-    lr = LogisticRegression()
+    lr = LogisticRegression(max_iter=5000)
 
     # Train the model
     lr.fit(x_train_tfidf, y_train)
@@ -78,7 +78,7 @@ def userTonality(user_input,filename):
     data = []
     #counting Value of emotions
     result= df['Tonality'].value_counts()
-    print(result)
+    #print(result)
     data.append(result)
     ntx=dir(ntf)
     # User handles
@@ -102,7 +102,7 @@ def userTonality(user_input,filename):
 
     # Check Accuracy
     checkAc=pipe_lr.score(x_test,y_test)
-    print(checkAc)
+    #print(checkAc)
     data.append(checkAc)
     data.append(pipe_lr.predict([user_input]))
     return pipe_lr.predict([user_input])

@@ -23,6 +23,6 @@ def words_cloud(keywords_array):
             a=[dict(dislist[i:i + chunlen]) for i in range(0, len(dislist), chunlen)] 
             print(a)
             '''
-            new_dict_list = [{'word': word, 'size': str(size*30)}for word, size in d.items()]
+            new_dict_list = [{'word': word, 'size': str(size*3)}for word, size in d.items()]
             
             return(new_dict_list)

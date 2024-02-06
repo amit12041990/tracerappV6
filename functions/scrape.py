@@ -2,7 +2,10 @@ import requests
 import pandas as pd
 from urllib.parse import urlparse
 from bs4 import BeautifulSoup
+from functions.tonality_emotion import *
+import datetime
 
+current_datetime = datetime.datetime.now()
 def show(data):
     print('hello user')
     print(data[0]['url'])
@@ -11,6 +14,7 @@ def show(data):
                 print(i['url'])
 
 def scrape_urls(urls):
+      
       urll=urls  
       #print(urll)  
      
@@ -44,7 +48,7 @@ def scrape_urls(urls):
                         removeSpace = meta.replace(" ","")
                         metaList = removeSpace.split(',')
                         for metakeyword in metaList:
-                                    keywords.append({'keyword':metakeyword,'sec':i['sec'],'pages':1})
+                                    keywords.append({'keyword':metakeyword,'sec':i['sec'],'pages':1,'timestamp':current_datetime})
                   except AttributeError:
                         print('attribute error')
                         try:
@@ -54,10 +58,10 @@ def scrape_urls(urls):
                               removeSpace = meta.replace(" ","")
                               metaList = removeSpace.split(',')
                               for metakeyword in metaList:
-                                    keywords.append({'keyword':metakeyword,'sec':i['sec'],'pages':1})
+                                    keywords.append({'keyword':metakeyword,'sec':i['sec'],'pages':1,'timestamp':current_datetime})
                         except:
                               url=urlparse(i['url']).netloc
-                              keywords.append({'keyword':url,'sec':i['sec'],'pages':1})
+                              keywords.append({'keyword':url,'sec':i['sec'],'pages':1,'timestamp':current_datetime})
                         
                         
 
@@ -111,16 +115,18 @@ def words_cloud(keywords_array):
             
             return(new_dict_list)
 
-
-def wcloud (listArr):
-      result = pd.DataFrame(listArr).groupby('keyword', as_index=False).sum(numeric_only=False).to_dict(orient='records')
-      print('wccloud')
-      #print(result)
+async def wcloud(listArr):
+      print('hello herro')
+      print(listArr)
+      '''
       try:
-             return result
-      except:
-             pass
-
+            result = pd.DataFrame(listArr).groupby('keyword', as_index=False).sum(numeric_only=False).to_dict(orient='records')
+            print('word cloud data processed successfully')
+            return result
+      except Exception as e:
+            print(f'An error occurred: {e}')
+            return None
+      '''
 def scrape_Video_url(urls):
       urll=urls  
       print(urll)  
@@ -156,7 +162,7 @@ def scrape_Video_url(urls):
                         vid_url = []
                         vid_url.append(i['url'])
                         for metakeyword in metaList:
-                                    keywords.append({'keyword':metakeyword,'sec':i['sec'],'pages':1,'video':1,'video_url':vid_url})
+                                    keywords.append({'keyword':metakeyword,'sec':i['sec'],'pages':1,'video':1,'video_url':vid_url,'timestamp':current_datetime})
                   except AttributeError:
                         print('attribute error')
                         try:
@@ -169,7 +175,7 @@ def scrape_Video_url(urls):
                               vid_url.append(i['url'])
                               for metakeyword in metaList:
 
-                                    keywords.append({'keyword':metakeyword,'sec':i['sec'],'pages':1,'video':1,'video_url':vid_url})
+                                    keywords.append({'keyword':metakeyword,'sec':i['sec'],'pages':1,'video':1,'video_url':vid_url,'timestamp':current_datetime})
                                     
                         except:
                               pass
@@ -199,7 +205,7 @@ def scrape_Video_url(urls):
 
 #scrape comment url
 #08/05/23
-def scrape_Comment_url(urls):
+async def scrape_Comment_url(urls):
       urll=urls  
       print(len(urll))
       print(urll[0]) 
@@ -213,7 +219,15 @@ def scrape_Comment_url(urls):
             if bool(i):
                   #assigning all dict value into comment list using dict
                   comment = []
-                  comment.append({'date':i['date'],'title':i['title'],'url':i['form_url'],'comment':i['comment']})
+                  userinput = str(i['comment'])
+                  print(userinput)
+                  ton=await analyze_tonality(userinput)
+                  emo = await analyze_emotion(userinput)
+                  print("Emotion:", emo)
+                  print("Tonality:", ton)
+                  comment.append({'date':i['date'],'title':i['title'],'url':i['form_url'],
+                                  'comment':i['comment'],'tonality':ton[0],'emotion':emo})
+                  
                   
                   r=""
                   try:
@@ -242,7 +256,7 @@ def scrape_Comment_url(urls):
                               metaList = removeSpace.split(',')
                         
                               for metakeyword in metaList:
-                                          keywords.append({'keyword':metakeyword,'pages':1,'sec':10,'comment':comment})
+                                          keywords.append({'keyword':metakeyword,'pages':1,'sec':10,'comment':comment,'timestamp':current_datetime})
                         except AttributeError:
                               print('attribute error')
                               try:
@@ -253,13 +267,13 @@ def scrape_Comment_url(urls):
                                     metaList = removeSpace.split(',')
                                     
                                     for metakeyword in metaList:
-                                          keywords.append({'keyword':metakeyword,'pages':1,'sec':60,'comment':comment})
+                                          keywords.append({'keyword':metakeyword,'pages':1,'sec':60,'comment':comment,'timestamp':current_datetime})
                               except:
                                     url=urlparse(i['form_url']).netloc
-                                    keywords.append({'keyword':url,'pages':1,'sec':60,'comment':comment})
+                                    keywords.append({'keyword':url,'pages':1,'sec':60,'comment':comment,'timestamp':current_datetime})
                         
                         except:
                               pass
                    
-      
+      print (keywords)
       return keywords

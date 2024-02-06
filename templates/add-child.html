@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+
+  <title>Parental Control Dashboard</title>
+  <meta content="" name="description" />
+  <meta content="" name="keywords" />
+
+  <!-- Favicons -->
+  <link href="{{ url_for('static', filename='assets/img/favicon.png') }}" rel="icon">
+  <link href="{{ url_for('static', filename='assets/img/apple-touch-icon.png') }}" rel="apple-touch-icon">
+
+  <!-- Vendor CSS Files -->
+  <link href="{{ url_for('static', filename='assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='assets/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='assets/vendor/datatables/datatable.css') }}" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/font.css') }}">
+
+  <!-- Template Main CSS File -->
+  <link href="{{ url_for('static', filename='assets/css/default.css') }}" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/style.css') }}">
+</head>
+
+<body>
+  <!-- ======= Header ======= -->
+  <header id="header" class="header fixed-top d-flex align-items-center">
+    <div class="container-fluid">
+      <div class="header-inner">
+        <div class="d-flex align-items-center justify-content-between">
+          <a href="./add-child.html" class="logo d-flex align-items-center">
+            <span class="d-none d-lg-block">Family</span>
+          </a>
+          <!-- <i class="bi bi-list toggle-sidebar-btn"></i> -->
+        </div>
+        <!-- End Logo -->
+        <nav class="header-nav ms-auto">
+          <ul class="d-flex align-items-center">
+            <li class="nav-item dropdown">
+              <a class="nav-link nav-icon" href="./dashboard.html"> Dashboard </a>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link nav-icon" href="#"> Family </a>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link btn logout-btn" href="{{ url_for('logout') }}">
+                <i class="bi bi-power"></i>
+                Logout
+              </a>
+            </li>
+          </ul>
+        </nav>
+        <!-- End Icons Navigation -->
+      </div>
+    </div>
+  </header>
+  <!-- End Header -->
+
+  <main id="main" class="main">
+    <section id="dashboard-main-sec">
+      <div class="container">
+        <div class="dashborad-main-wrapper">
+          <div class="dashboard-top-wrap">
+            <div class="family-top-wrap add-child-top-wrap">
+              <div class="add-child-head">
+                <p>Parrent Id : {{content}}</p>
+                <p>Members List : </p>
+              </div>
+              <div class="add-child-btn-wrap">
+                <button class="btn add-child-btn" data-bs-target="#addChild" data-bs-toggle="modal"><i
+                    class="bi bi-plus"></i> Add Child</button>
+              </div>
+            </div>
+          </div>
+          <div class="dashboard-content-wrap">
+            <div class="table-wrapper add-child-table-wrapper">
+              <table class="add-child-table table table-striped">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Age</th>
+                    <th>Gender</th>
+                    <th>Unique ID</th><th>device login id</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!------Dynamic tbody  -->
+                  {% for child in childs %}
+                  <tr>
+                    <td>{{child['name']}}</td>
+                    <td>{{ child['dob']}}</td>
+                    <td>{{child['gender']|safe}}</td>
+                    
+                    <td>
+                      <div class="id-copy-wrap">
+                        <span class="child-id">{{child['u_id']}}</span>
+                        <button class="btn action-btn id-copy-btn"><i class="bi bi-clipboard-fill"
+                            title="Copy ID"></i></button>
+                      </div>
+                    </td>
+                    <td>{{child['mobile_id']}}</td>
+                    <td>
+                      {%if child['u_id']  %}
+                      <div class="action-btn-wrap">
+                        <button class="btn action-btn" data-bs-target="#editChild" data-bs-toggle="modal"
+                          data-child-id="{{ child['u_id'] }}"><i class="bi bi-pencil-fill"></i></button>
+
+                        <button class="btn action-btn" data-bs-target="#deleteModal" data-bs-toggle="modal" data-child-id="{{ child['u_id'] }}"><i
+                            class="bi bi-trash-fill"></i></button>
+                        <button class="btn action-btn" data-bs-target="#previewChild" data-bs-toggle="modal" data-child-id="{{ child['u_id'] }}"><i
+                            class="bi bi-eye-fill"></i></button>
+                            <button class="btn action-btn" onclick="redirectToDashboard('{{ child['u_id'] }}')" data-bs-toggle="modal" data-child-id="{{ child['u_id'] }}">
+                              <i class="bi bi-speedometer"></i>
+                            </button>
+                      </div>
+                      {%endif%}
+                    </td>
+                  </tr>
+                  {% endfor %}
+
+
+
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <!-- End #main -->
+  <!--ADD Modal -->
+  <div class="modal fade" id="addChild" tabindex="-1" aria-labelledby="addChildModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="addChildModal">Add Child</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form action="{{ url_for('crud_add_child_route') }}" method="POST" name="add-child">
+          <input type="hidden" name="formName" value="add-child">
+          <div class="modal-body">
+            <div class="add-child-body-wrap">
+              <div class="row">
+                <div class="col-12 mb-3">
+                  
+                  <label for="childName" class="form-label">Child Name</label>
+                  <input type="text" class="form-control" id="childName" placeholder="Child Name" name="childName" required />
+                </div>
+                <div class="col-md-6">
+                  <label for="dob" class="form-label" name="dob">DOB</label>
+                  <input type="date" class="form-control" id="dob" name="dob" required />
+                </div>
+                <div class="col-md-6">
+                  <label for="gender" class="form-label">Gender</label>
+                  <select id="gender" class="form-select" name="gender"required>
+                    <option selected="">Select Gender</option>
+                    <option>Male</option>
+                    <option>Female</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
+            <button type="submit" class="btn btn-primary">Add Child</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!--EDIT Modal -->
+  <div class="modal fade" id="editChild" tabindex="-1" aria-labelledby="addChildModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="addChildModal">Edit Child</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form action="{{ url_for('crud_add_child_route') }}" method="POST" >
+          <input type="hidden" name="formName" value="edit-child">
+          <input type="hidden" id="child_id" name="child_id" value="">
+          <div class="modal-body">
+            <div class="add-child-body-wrap">
+              <div class="row">
+                <div class="col-12 mb-3">
+                  <label for="childName" class="form-label">Child Name</label>
+                  <input type="text" class="form-control" id="childName" placeholder="Child Name"
+                    name="childName" value="Amit Kumar Shah" required />
+                </div>
+                <div class="col-md-6">
+                  <label for="dob" class="form-label">DOB</label>
+                  <input type="date" class="form-control" id="dob" required name="dob"/>
+                </div>
+                <div class="col-md-6">
+                  <label for="gender" class="form-label">Gender</label>
+                  <select id="gender" class="form-select" name="gender">
+                    <option selected="">Select Gender</option>
+                    <option>Male</option>
+                    <option>Female</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
+            <button type="submit" class="btn btn-primary">Update Child</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!--DELETE Modal -->
+  <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="addChildModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="addChildModal">Delete Record</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form action="{{ url_for('crud_add_child_route') }}" method="POST">
+          <input type="hidden" name="formName" value="delete-child">
+          
+
+          <div class="modal-body">
+            <h5 class="delete-title mb-4 text-center">Are you sure you want to delete this record?</h5>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="d-grid">
+                  <input type="hidden" id="child_id" name="child_id" value="">
+                  <button type="button" data-bs-dismiss="modal" class="btn btn-outline">Cancel</button>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="d-grid">
+                  <button type="submit" class="btn btn-danger">Delete</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+
+  <!--PREVIEW Modal -->
+  <div class="modal fade" id="previewChild" tabindex="-1" aria-labelledby="addChildModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="addChildModal">Child Details</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form action="">
+          <div class="modal-body">
+            <div class="child-details-wrap">
+              <div class="row">
+                <div class="col-12">
+                  <p>Name: <span id="childName-span">Amit Kumar Shah</span></p>
+                  <p>Dob: <span id="dob-span">14</span></p>
+                  <p>Gender: <span id="gender-span">Male</span></p>
+                  <p>ID: <span id="childId-span">b565fcf8-4587-48d5-871B-458930</span></p>
+              </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======= Footer ======= -->
+  <footer id="footer" class="footer">
+    <div class="copyright">
+      &copy; Copyright <strong><span>Parental Control</span></strong>. All Rights Reserved
+    </div>
+  </footer>
+  <!-- End Footer -->
+  <div class="alert-wrapper">
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+      <i class="bi bi-check-circle me-1"></i>
+      <span class="copeid-id">b565fcf8-4587-48d5-325R-458930</span> Copied !
+      <!-- <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button> -->
+    </div>
+  </div>
+
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
+      class="bi bi-arrow-up-short"></i></a>
+
+  <!-- Vendor JS Files -->
+  <script src="{{ url_for('static', filename='assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/jquery/jquery_3-70_min.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/datatables/datatable.js') }}"></script>
+
+  <!-- Template Main JS File -->
+  <script src="{{ url_for('static', filename='assets/js/main.js') }}"></script>
+  <script>
+    $(document).ready(function () {
+      $(".add-child-table").DataTable();
+    });
+  </script>
+  <script>
+    let copyBtn = document.querySelectorAll(".id-copy-btn");
+    let alertTxt = document.querySelector(".copeid-id");
+    let alertWrap = document.querySelector(".alert-wrapper");
+    copyBtn.forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        let prevElementTxt = btn.previousElementSibling.textContent;
+        navigator.clipboard.writeText(prevElementTxt);
+        showAlert();
+        alertTxt.textContent = prevElementTxt;
+      });
+    });
+
+    function showAlert() {
+      alertWrap.classList.add("show");
+      setTimeout(function () {
+        alertWrap.classList.remove("show");
+      }, 3000);
+    }
+  </script>
+  <script>
+    $(document).ready(function () {
+      $('#editChild,#previewChild,#deleteModal').on('show.bs.modal', function (event) {
+       
+        var button = $(event.relatedTarget);  // Button that triggered the modal
+        var childId = button.data('child-id');
+        console.log(childId) // Extract the child_id from data attribute
+        var modal = $(this);  // Modal that is being shown
+
+        // Find the child with the matching u_id
+        var child = getChildById(childId);
+        console.log(child)
+
+        // Populate modal input fields with child data
+        modal.find('#childName').val(child.name);
+        modal.find('#dob').val(child.dob);
+        modal.find('#gender').val(child.gender);
+        modal.find('#child_id').val(childId);
+// Populate modal input fields with child data
+            modal.find('#childName-span').text(child.name);
+            modal.find('#dob-span').text(child.dob);
+            modal.find('#gender-span').text(child.gender);
+            modal.find('#childId-span').text(childId);
+// Populate modal input fields with child data
+modal.find('#child_id').val(childId);
+
+      });
+
+      var childsData = {{ childs | tojson
+    }};
+
+    function getChildById(uId) {
+      for (var i = 0; i < childsData.length; i++) {
+        if (childsData[i].u_id === uId) {
+          return childsData[i];
+        }
+      }
+      return null;
+    }
+      });
+  </script>
+  <script>
+    function redirectToDashboard(uId) {
+      var url = "/dashboard?u_id=" + encodeURIComponent(uId);
+      // Open the URL in a new tab or window
+  window.open(url, '_blank');
+    }
+    </script>
+
+</body>
+
+</html>

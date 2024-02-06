@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+<script>
+    //wordscloud
+    // Function to filter data based on the selected time period
+    const tonality_and_emotion_array = (filtered_data) => {
+      const seenComments = new Set();
+      const filteredComments = [];
+      const tonality = [];
+      const emotion = [];
+
+      for (const entry of filtered_data) {
+        if ('comment' in entry) {
+          const commentList = entry['comment'];
+          if (Array.isArray(commentList)) { // Check if commentList is an array
+            for (const commentEntry of commentList) {
+              if ('comment' in commentEntry) {
+                const commentText = commentEntry['comment'];
+                if (!seenComments.has(commentText)) {
+                  seenComments.add(commentText);
+                  filteredComments.push(commentEntry);
+                  if ('tonality' in commentEntry) {
+                    tonality.push(commentEntry['tonality']);
+                  }
+                  if ('emotion' in commentEntry) {
+                    emotion.push(commentEntry['emotion']);
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+
+      // Calculate unique values and corresponding percentiles for tonality
+      const uniqueValuesTon = [];
+      const uniquePercentilesTon = [];
+
+      for (const value of tonality) {
+        if (!uniqueValuesTon.includes(value)) {
+          uniqueValuesTon.push(value);
+          const percentile = calculatePercentile(tonality, value);
+          uniquePercentilesTon.push(percentile);
+        }
+      }
+
+      // Calculate unique labels and corresponding percentiles for emotion
+      const uniqueValEmo = [];
+      const uniquePercentilesEmo = [];
+
+      for (const label of emotion) {
+        if (!uniqueValEmo.includes(label)) {
+          uniqueValEmo.push(label);
+          const percentile = calculatePercentile(emotion, label);
+          uniquePercentilesEmo.push(percentile);
+        }
+      }
+
+      // Define a function to calculate percentiles (you need to implement this function)
+      function calculatePercentile(valueList, value) {
+        const count = valueList.reduce((accumulator, currentValue) => {
+          return currentValue === value ? accumulator + 1 : accumulator;
+        }, 0);
+
+        return (count / valueList.length) * 100;
+      }
+      var tonEmo_data = []
+      if (filteredComments.length > 0) { tonEmo_data.push({ 'ton': [uniqueValuesTon, uniquePercentilesTon], 'emo': [uniqueValEmo, uniquePercentilesEmo], 'tot_comments': filteredComments.length }) }
+      else { tonEmo_data.push({ 'ton': [['Tonality Not Found'], [[100]]], 'emo': [['Emotion Not Found'], [[100]]], 'tot_comments': 0 }) }
+      return tonEmo_data
+    }
+
+   
+
+
+
+
+   
+
+    searchForm.addEventListener('submit', function (e) {
+      e.preventDefault(); // Prevent the form from submitting
+       var keywords = {{ wordcloud_data| tojson}}
+
+      var keyword_array = keywords.filter(el => { if (el.keyword !== 'localhost:4000') { return el } })
+      var language_accuracy = {{ language_accurac | tojson}}
+
+      console.log(language_accuracy)
+      var lang_acc_data_by_timestamp = language_accuracy[4]
+
+
+
+    const count_datas = {{ count_data | tojson}}
+    const count_data_parse = JSON.parse(count_datas)
+
+    const duration = document.getElementById("duration");
+    const screettime = document.getElementById("sc-time");
+    duration.textContent = hourMin(count_data_parse[1]);
+    screettime.textContent = hourMin(count_data_parse[1]);
+
+    const timePeriodDropdown = document.getElementById('timePeriodDropdown');
+    const searchForm = document.querySelector('.search-form');
+
+      const selectedTimePeriod = parseInt(timePeriodDropdown.value);
+      selectedDate = selectedTimePeriod
+      filered_data = filterDataByTimePeriod(keyword_array, selectedDate)
+      let ton_emo_data = tonality_and_emotion_array(filered_data)
+      console.log(ton_emo_data)
+      console.warn('filter data')
+      console.log(filered_data)
+      const values = filered_data.map(el => { return el.sec })
+      const newData = filered_data.filter(el => { el.percent = percentile(values, el.sec); return el })
+
+      const newlist = []
+
+      newData.forEach(element => { newlist.push([element.keyword, Math.floor(element.percent), element.comment, element.video_url, element.pages, element.sec]) });
+      //console.warn(filteredData)
+      const uniqueValues = {};
+      const filteredData = newlist.filter(item => {
+        const value = item[1]; if (!uniqueValues.hasOwnProperty(value)) {
+          uniqueValues[value] = true; return true; // Keep the item in the filtered array
+        }
+        return false; // Remove the duplicate item
+      });
+      var totPage = 0;
+      var totComment = 0;
+      var totalSec = 0;
+      var totVid = 0
+
+
+      newlist.forEach(el => {
+        totPage += el[4]; totalSec += el[5];
+        if (Array.isArray(el[2])) { totComment += el[2].length; }
+        if (Array.isArray(el[3])) { totVid += el[3].length; }
+      });
+      const totalVideo = document.getElementById("totalVideo");
+      const pages = document.getElementById("pages");
+      const comments = document.getElementById("comments");
+      totalVideo.textContent = totVid;
+      pages.textContent = count_data_parse[0];
+      comments.textContent = count_data_parse[2];
+
+      const restructuredData = restructureArray(newlist);
+      createWordCloud(restructuredData);
+      createDonutChart(ton_emo_data[0].ton)
+      createEmotionDonutChart(ton_emo_data[0].emo)
+      
+
+
+
+    });
+
+    function hourMin(sec) { let totalSeconds = sec; let hours = Math.floor(totalSeconds / 3600); let minutes = Math.floor((totalSeconds % 3600) / 60); return (hours + " hours " + minutes + ""); }
+    let wordWrap = document.getElementById("check");
+    // percentile of url duration
+    const percentile = (arr, val) => { let count = 0; arr.forEach(v => { if (v < val) { count++; } else if (v == val) { count += 0.5; } }); return 100 * count / arr.length; }
+    //
+
+
+    //demo list
+    let list = [["foo", 21, "http://yahoo.com"],];
+
+
+
+    async function createWordCloud(list) {
+      // Your WordCloud configuration options and click handler
+      const options = {
+        list: list,
+        fontFamily: "Lato, serif",
+        rotateRatio: 0.5,
+        shape: "star",
+        rotationSteps: 2,
+        backgroundColor: "#ffffff",
+        gridSize: 15,
+        shrinkToFit: true, // Enable shrinkToFit
+        weightFactor: 1,
+        hover: window.drawBox,
+        shape: "circle",
+        click: function (item) {
+          function hourMin(sec) { let totalSeconds = sec; let hours = Math.floor(totalSeconds / 3600); let minutes = Math.floor((totalSeconds % 3600) / 60); return (hours + " hours " + minutes + ""); }
+
+          const encodedData = encodeURIComponent(JSON.stringify(item));
+          const url = `/interest?data=${encodedData}`;
+          window.open(url, '_blank');
+        },
+      };
+
+      // Create the WordCloud
+      WordCloud(wordWrap, options);
+    }
+
+
+    // Call the async function to create the WordCloud
+
+
+    // Given array
+
+    function removePrefixAndCom(domain) { return domain.replace(/^(web\.|app\.|app\.|www\.|chat\.)/, '').replace(/\.com$/, ''); }
+
+    // Function to restructure the array
+    function restructureArray(data) { const restructuredData = []; for (const item of data) { const domain = removePrefixAndCom(item[0]); restructuredData.push([domain, ...item.slice(1)]); } return restructuredData; }
+
+
+
+
+
+
+
+
+
+
+  </script>
+
+  <script>
+    var language_accuracy = {{ language_accurac | tojson}}
+
+    console.log(language_accuracy)
+    let lang_acc_data_by_timestamp = language_accuracy[4]
+    console.log(lang_acc_data_by_timestamp[0].time.$date)
+
+
+    // Get references to HTML elements
+    const rawData = lang_acc_data_by_timestamp
+
+
+    // Event listener for form submission
+    searchForm.addEventListener('submit', function (e) {
+      e.preventDefault(); // Prevent the form from submitting
+
+      // Get the selected time period value
+      const selectedTimePeriod = parseInt(timePeriodDropdown.value);
+
+      // Calculate the date threshold based on the selected time period
+     
+      
+
+    
+
+      console.warn(filered_data);
+      console.warn(result)
+      console.log('Selected Time Period:', selectedTimePeriod);
+      console.log('Current Date:', currentDate);
+      console.log('Threshold Date:', thresholdDate);
+      createRadialBarChart(result);
+      
+    });
+
+
+
+
+
+
+
+
+
+    async function createRadialBarChart(result) {
+      let color;
+      if (result[0] + result[1] / 2 < 20) { color = "#FF0000"; } else if (result[0] + result[1] / 2 < 50) { color = "#FFA500"; } else { color = "#0d6efd"; }
+      var progressOptions = {chart: {height: 280,type: "radialBar",},
+
+        series: [Math.round((0.4 * result[0] + 0.4 * result[1]) / 0.8)],
+        colors: [color],
+        plotOptions: {
+          radialBar: {
+            hollow: {
+              margin: 0,
+              size: "70%",
+              background: "#ffffff",
+            },
+            track: {
+              dropShadow: {
+                enabled: true,
+                top: 2,
+                left: 0,
+                blur: 4,
+                opacity: 0.15,
+              },
+            },
+            dataLabels: {
+              name: {
+                offsetY: 0,
+                color: "#000",
+                fontSize: "10px",
+              },
+              value: {
+                color: "#000",
+                fontSize: "30px",
+                show: true,
+                offsetY: -8,
+              },
+            },
+          },
+        },
+        fill: {
+          type: "gradient",
+          gradient: {
+            shade: "dark",
+            type: "vertical",
+            gradientToColors: ["#0d6efd"],
+            stops: [0, 100],
+          },
+        },
+        stroke: {
+          lineCap: "round",
+        },
+        labels: [""],
+      };
+
+      var chart = new ApexCharts(document.querySelector(".language-chart"), progressOptions);
+
+      chart.render();
+    }
+
+    // Call the async function to create the radial bar chart
+
+
+
+  </script>
+
+  <script>
+    let tonalityChart = document.querySelector(".tonality-chart");
+    const data_emo = {{ dataton | tojson}}
+
+
+    tonality_emotion1 = JSON.parse(data_emo)
+
+
+    emotion = tonality_emotion1[0].emo
+   
+
+    // Call the async function to create the donut chart
+
+  
+
+  </script>
+
+  <script>
+    const data_ton = {{ dataton | tojson}}
+    console.log(data_ton)
+    tonality_emotion = JSON.parse(data_ton)
+    console.log(tonality_emotion[0].ton)
+    tonality = tonality_emotion[0].ton
+    emotion = tonality_emotion[0].emo
+  
+
+    // Call the async function to create the donut chart with emotions
+
+
+  </script>
+
+  <script>
+    const screen_time = {{ screenTime | tojson}}
+    const screen_time_parse = JSON.parse(screen_time)
+    console.log(screen_time_parse)
+    const childID = {{ child_id | tojson}}
+    console.log(childID)
+ 
+
+
+  </script>
+
+  <script>
+    
+  
+  </script>
+</html>
